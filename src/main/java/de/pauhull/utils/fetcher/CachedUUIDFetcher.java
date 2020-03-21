@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import de.pauhull.utils.scheduler.Scheduler;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,6 +68,12 @@ public class CachedUUIDFetcher implements UUIDFetcher {
         UUID uuid = cache.getUUID(playerName);
         if (uuid != null) {
             return new Profile(playerName, uuid);
+        }
+
+        Player player = Bukkit.getPlayer(playerName);
+        if (player != null) {
+            cache.save(player.getUniqueId(), player.getName());
+            return new Profile(player.getName(), player.getUniqueId());
         }
 
         try {
@@ -133,6 +141,12 @@ public class CachedUUIDFetcher implements UUIDFetcher {
         String playerName = cache.getName(uuid);
         if (playerName != null) {
             return new Profile(playerName, uuid);
+        }
+
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            cache.save(player.getUniqueId(), player.getName());
+            return new Profile(player.getName(), player.getUniqueId());
         }
 
         try {
